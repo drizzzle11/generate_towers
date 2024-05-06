@@ -41,6 +41,41 @@ def GenerateMod1(IMAX, JMAX, KMAX, Pattern, x, y, z):
     t = GenerateSurfaces(midPt)
     return t
     
+
+#Function for generating Pattern 2 
+def GenerateMod2(IMAX, JMAX, KMAX, PATTERN, X, Y, Z): 
+    pi = math.pi 
+    imax = IMAX 
+    jmax = JMAX 
+    kmax = KMAX 
+    pattern = PATTERN 
+    xl = X
+    yl = Y 
+    zl = Z 
+    Pt = {}
+    midPt = []
+    #Storing grid coordinates  
+    for i in range(imax):
+        for j in range(jmax):
+            for k in range(kmax):
+                x = 80 + xl + i * 16 + math.tan(i)*pi*pattern 
+                y = yl + j * 16 + math.tan(j)*pi*pattern 
+                z = 90 * zl + k * 16 + math.tan(k)*pi*pattern
+                Pt[(i,j,k)] = (x,y,z)
+    for i in range(imax):
+        for j in range(jmax):
+            for k in range(kmax):
+                if i > 0 and j > 0 and k > 0:
+                    midPt.append(MidPt(Pt[(i,j,k)], Pt[(i,j-1,k)]))
+                    midPt.append(MidPt(Pt[(i,j,k)], Pt[(i-1,j,k)]))
+                    midPt.append(MidPt(Pt[(i-1,j,k)], Pt[(i-1,j-1,k)]))
+                    midPt.append(MidPt(Pt[(i-1,j-1,k)], Pt[(i,j-1,k)]))
+                    midPt.append(MidPt(Pt[(i-1,j-1,k)], Pt[(i-1,j-1,k-1)]))
+                    midPt.append(MidPt(Pt[(i-1,j-1,k-1)], Pt[(i,j-1,k-1)]))
+    t = GenerateSurfaces(midPt)
+    return t
+
+    
 # Function to generate surfaces
 def GenerateSurfaces(MidPoint):
     midPt = MidPoint
@@ -81,6 +116,7 @@ def Main():
             x = 150 * math.sin(a + Angle)
             y = 150 * math.cos(a + Angle)
             rs.RotateObjects(GenerateMod1(imax, jmax, kmax, pattern, x, y, z), [0, 0, 0], angle_rotation * z)
+            rs.RotateObjects(GenerateMod2(imax, jmax, kmax, pattern, x, y, z), [0, 0, 0], angle_rotation * z)
     rs.EnableRedraw(True)
 
 if __name__ == "__main__":
